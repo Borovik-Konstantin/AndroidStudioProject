@@ -43,6 +43,7 @@ find_library( # Sets the name of the path variable.
 target_link_libraries( # Specifies the target library.
         softwaredevelopment
         spdlog
+        mbedcrypto
 
         # Links the target library to the log library
         # included in the NDK.
@@ -51,9 +52,21 @@ target_link_libraries( # Specifies the target library.
 
 add_library(spdlog STATIC IMPORTED)
 set_target_properties(spdlog PROPERTIES IMPORTED_LOCATION
-        /Users/joe/Projects/rpo/libs/spdlog/build/${ANDROID_ABI}/libspdlog.a)
-target_include_directories(native-lib PUBLIC
-        /Users/joe/Projects/rpo/libs/spdlog/spdlog/include)
+        /home/kostikq/AndroidStudioProjects/SoftwareDevelopment2/libs/spdlog/build/${ANDROID_ABI}/libspdlog.a)
+#target_include_directories(softwaredevelopment PUBLIC
+#        /home/kostikq/AndroidStudioProjects/SoftwareDevelopment2/libs/spdlog/spdlog/include)
+
+
+add_library(mbedcrypto SHARED IMPORTED)
+set_target_properties(mbedcrypto PROPERTIES IMPORTED_LOCATION
+        /home/kostikq/AndroidStudioProjects/SoftwareDevelopment2/libs/mbedtls/build/${ANDROID_ABI}/library/libmbedcrypto.so)
+
+target_include_directories(softwaredevelopment PUBLIC
+        /home/kostikq/AndroidStudioProjects/SoftwareDevelopment2/libs/spdlog/spdlog/include
+        /home/kostikq/AndroidStudioProjects/SoftwareDevelopment2/libs/mbedtls/mbedtls/include)
+
+
+
 
 
 
