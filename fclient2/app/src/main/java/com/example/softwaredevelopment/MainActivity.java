@@ -25,10 +25,38 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.softwaredevelopment.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+import java.text.DecimalFormat;
 
-
+public class MainActivity extends AppCompatActivity implements TransactionEvents{
+    private String pin;
     ActivityResultLauncher activityResultLauncher;
+
+    @Override
+    public String enterPin(int ptc, String amount) {
+        pin = new String();
+        Intent it = new Intent(MainActivity.this, PinpadActivity.class);
+        it.putExtra("ptc", ptc);
+        it.putExtra("amount", amount);
+        synchronized (MainActivity.this) {
+            activityResultLauncher.launch(it);
+            try {
+                MainActivity.this.wait();
+            } catch (Exception ex) {
+                //todo: log error
+            }
+        }
+        return pin;
+    }
+
+
+    @Override
+    public void transactionResult(boolean result) {
+        runOnUiThread(()-> {
+            Toast.makeText(MainActivity.this, result ? "ok" : "failed", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+
 
 
     // Used to load the 'softwaredevelopment' library on application startup.
@@ -62,13 +90,17 @@ public class MainActivity extends AppCompatActivity {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent data = result.getData();
                             // обработка результата
-                            String pin = data.getStringExtra("pin");
-                            System.out.println("Correct!");
-                            Toast.makeText(MainActivity.this, pin, Toast.LENGTH_SHORT).show();
-                            System.out.println("Correct!");
+                            /*String pin = data.getStringExtra("pin");
+                            Toast.makeText(MainActivity.this, pin, Toast.LENGTH_SHORT).show();*/
+                            pin = data.getStringExtra("pin");
+                            synchronized (MainActivity.this) {
+                                MainActivity.this.notifyAll();
+                            }
                         }
                     }
                 });
+
+
     }
     public static byte[] stringToHex(String s)
     {
@@ -84,8 +116,37 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onButtonClick(View v)
     {
+
+        byte[] trd = stringToHex("9F0206000000000100");
+        transaction(trd);
+        /*new Thread(()-> {
+            try {
+                byte[] trd = stringToHex("9F0206000000000100");
+                boolean ok = transaction(trd);
+                runOnUiThread(()-> {
+                    Toast.makeText(MainActivity.this, ok ? "ok" : "failed", Toast.LENGTH_SHORT).show();
+                });
+
+            } catch (Exception ex) {
+                // todo: log error
+            }
+        }).start();
         Intent it = new Intent(this, PinpadActivity.class);
-        activityResultLauncher.launch(it);
+        activityResultLauncher.launch(it);*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     /**
@@ -97,5 +158,8 @@ public class MainActivity extends AppCompatActivity {
     public static native byte[] randomBytes(int no);
     public static native byte [] encrypt(byte[] key, byte[] data);
     public static native byte [] decrypt(byte[] key, byte[] data);
+    public native boolean transaction(byte[] trd);
+
+
 
 }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/purple_200"
     tools:context=".MainActivity">
 
     <TextView
@@ -19,6 +20,7 @@
 
     <Button
         android:id="@+id/button"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="296dp"
@@ -26,10 +28,13 @@
         android:onClick="onButtonClick"
         android:rotationX="-2"
         android:text="Click me pls"
+        app:iconTint="#009688"
         app:layout_constraintBottom_toTopOf="@+id/sample_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:rippleColor="#009688"
+        app:strokeColor="#009688" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
